@@ -3,6 +3,7 @@
 ## Overview
 My 4th year's Cybersecurity course project. Tasked with coming up with a new and feasible solution to detect and mitagate Cross-Stie Request Forgery (CSRF) web vulerability.
 Our answer is to try combining traditional strategies with UBA (User Behavior Analysis) to make a multi-layered request validation.
+- Writeup [link](https://docs.google.com/document/d/1b6qGvaICpVfPn430Sb2hRqt8Gyyeh1ZC/edit?usp=sharing&ouid=105915792355737606410&rtpof=true&sd=true)
 
 ## What is CSRF?
 CSRF (Cross-Site Request Forgery) is a web security vulnerability where an attacker tricks a user’s browser into sending an unintended, authenticated request to a trusted website. Because the browser automatically includes session cookies, the server believes the request is legitimate.
