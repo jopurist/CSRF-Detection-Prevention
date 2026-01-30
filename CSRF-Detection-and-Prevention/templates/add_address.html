@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Address Page</title>
+    <link rel="stylesheet" href="/static/address-style.css">
+    <style>
+        /* Reset default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 30px;
+    text-align: center;
+    font-size: 2.2em;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    font-size: 1.1em;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.2);
+}
+
+input[type="text"]::placeholder {
+    color: #999;
+}
+
+button {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+button[onclick="submitAddress()"] {
+    background-color: #4CAF50;
+    color: white;
+}
+
+button[onclick="submitAddress()"]:hover {
+    background-color: #45a049;
+}
+
+button[onclick="goCart()"] {
+    background-color: #f8f9fa;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+button[onclick="goCart()"]:hover {
+    background-color: #e9ecef;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+    body {
+        padding: 20px 15px;
+    }
+    
+    h1 {
+        font-size: 1.8em;
+        margin-bottom: 20px;
+    }
+    
+    input[type="text"] {
+        padding: 12px;
+    }
+    
+    button {
+        padding: 12px;
+    }
+}
+    </style>
+</head>
+<body>
+    <h1>Add Address</h1>
+    <input type="text" id="address" placeholder="Enter your address">
+    <button onclick="submitAddress()">Submit Address</button>
+    <button onclick="goCart()">Go Back to Cart</button>
+
+    <script>
+        let csrfToken = '';
+
+        async function fetchCSRFToken() {
+            const response = await fetch('/api/get_csrf_token');
+            const data = await response.json();
+            csrfToken = data.csrf_token;
+        }
+
+        async function submitAddress() {
+            const address = document.getElementById('address').value;
+            const response = await fetch('/api/submit_address', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': csrfToken 
+                },
+                body: JSON.stringify({ address })
+            });
+            const result = await response.json();
+            alert(result.message);
+        }
+
+        function goCart() {
+            window.location.href = '/cart';
+        }
+
+        // On page load, fetch CSRF token
+        window.onload = fetchCSRFToken;
+    </script>
+</body>
+</html>

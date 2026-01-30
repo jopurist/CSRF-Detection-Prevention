@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home Page</title>
+    <!-- <link rel="stylesheet" href="/static/home-style.css"> -->
+    <style>
+        /* Reset default styles */
+* * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f5f5f5;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 30px;
+    text-align: center;
+    font-size: 2.5em;
+}
+
+p {
+    color: #666;
+    margin-bottom: 20px;
+    font-size: 1.1em;
+}
+
+/* Container for buttons */
+.button-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* Special styling for the "Go to Cart" button */
+button[onclick="goToCart()"] {
+    background-color: #2196F3;
+    width: 200px;
+    margin: 20px auto;
+    display: block;
+}
+
+button[onclick="goToCart()"]:hover {
+    background-color: #1976D2;
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+    
+    button {
+        width: 100%;
+    }
+    
+    h1 {
+        font-size: 2em;
+    }
+}
+
+    </style>
+</head>
+<body>
+    <h1>Home Page</h1>
+    <p>Select items to add to cart:</p>
+    <button onclick="addItem('item1')">Add to cart 1</button>
+    <button onclick="addItem('item2')">Add to cart 2</button>
+    <button onclick="addItem('item3')">Add to cart 3</button>
+    <br><br>
+    <button onclick="goToCart()">Go to Cart</button>
+
+    <script>
+        async function addItem(itemName) {
+            const response = await fetch('/api/add_item', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': csrfToken // send the token in a custom header
+                },
+                body: JSON.stringify({ item: itemName })
+            });
+            const result = await response.json();
+            alert(result.message);
+        }
+
+        function goToCart() {
+            window.location.href = '/cart';
+        }
+    </script>
+    <script>
+        let csrfToken = '';
+    
+        async function fetchCSRFToken() {
+            const response = await fetch('/api/get_csrf_token');
+            const data = await response.json();
+            csrfToken = data.csrf_token;
+        }
+    
+        // On page load, fetch the token
+        window.onload = fetchCSRFToken;
+    </script>
+</body>
+</html>

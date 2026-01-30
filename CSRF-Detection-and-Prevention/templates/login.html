@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="/static/login-style.css">
+</head>
+<body>
+    <h1>Login</h1>
+    <div id="error-message" class="error"></div>
+    <input type="text" id="username" placeholder="Username" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button id="loginButton">Login</button>
+
+    <script>
+        document.getElementById('loginButton').addEventListener('click', async () => {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            const result = await response.json();
+
+            if (response.status === 200) {
+                window.location.href = result.redirect;
+            } else {
+                document.getElementById('error-message').textContent = result.message;
+            }
+        });
+    </script>
+</body>
+</html>

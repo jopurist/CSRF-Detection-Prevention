@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cart Page</title>
+    <link rel="stylesheet" href="/static/cart-style.css">
+</head>
+<body>
+    <h1>Cart Page</h1>
+    <div id="items"></div>
+    <div id="addressDiv"></div>
+    <button onclick="confirmPayment()">Confirm Payment</button>
+    <button onclick="addAddress()">Add Address</button>
+    <button onclick="goHome()">Go Home</button>
+
+    <script>
+        let csrfToken = '';
+
+        async function fetchCSRFToken() {
+            const response = await fetch('/api/get_csrf_token');
+            const data = await response.json();
+            csrfToken = data.csrf_token;
+        }
+
+        async function loadCartItems() {
+            const response = await fetch('/api/get_cart');
+            const data = await response.json();
+            const itemsDiv = document.getElementById('items');
+            const addressDiv = document.getElementById('addressDiv');
+
+            itemsDiv.innerHTML = '';
+            addressDiv.innerHTML = '';
+
+            // Display items
+            if (data.items && data.items.length > 0) {
+                data.items.forEach((item, index) => {
+                    const p = document.createElement('p');
+                    p.textContent = item + " ";
+                    const removeBtn = document.createElement('button');
+                    removeBtn.textContent = "Remove";
+                    removeBtn.onclick = () => removeItem(index);
+                    p.appendChild(removeBtn);
+                    itemsDiv.appendChild(p);
+                });
+            } else {
+                itemsDiv.textContent = 'Cart is empty';
+            }
+
+            // Display address if available
+            if (data.address) {
+                const addrP = document.createElement('p');
+                addrP.textContent = "Shipping Address: " + data.address;
+                addressDiv.appendChild(addrP);
+            } else {
+                const noAddr = document.createElement('p');
+                noAddr.textContent = "No address set. Please add one.";
+                addressDiv.appendChild(noAddr);
+            }
+        }
+
+        async function removeItem(index) {
+            const response = await fetch('/api/remove_item', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': csrfToken 
+                },
+                body: JSON.stringify({ index })
+            });
+            const result = await response.json();
+            alert(result.message);
+            loadCartItems();
+        }
+
+        async function confirmPayment() {
+            const response = await fetch('/api/confirm_payment', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-Token': csrfToken
+                }
+            });
+            const result = await response.json();
+            alert(result.message);
+        }
+
+        function addAddress() {
+            window.location.href = '/add_address';
+        }
+
+        function goHome() {
+            window.location.href = '/home';
+        }
+
+        // On page load, first fetch CSRF token, then load items
+        window.onload = async () => {
+            await fetchCSRFToken();
+            loadCartItems();
+        };
+    </script>
+</body>
+</html>
